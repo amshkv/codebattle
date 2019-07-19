@@ -88,7 +88,7 @@ defmodule Codebattle.CodeCheck.JS.IntegrationTest do
     Mix.Shell.Process.flush()
 
     Phoenix.ChannelTest.push(socket1, "check_result", %{
-      editor_text: "const solution = (a, b) => { return a - b; }; module.exports = solution;\n",
+      editor_text: "const solution = (arr) => { return {\"1\": 10}; }; module.exports = solution;\n",
       lang: "js"
     })
 
@@ -98,7 +98,7 @@ defmodule Codebattle.CodeCheck.JS.IntegrationTest do
       payload: %{result: result, output: output}
     }
 
-    expected_result = %{"status" => "failure", "result" => 0, "arguments" => [1, 1]}
+    expected_result = %{"status" => "failure", "result" => %{"1" => 10}, "arguments" => [[[1, 1]]]}
     assert expected_result == Jason.decode!(result)
 
     fsm = Server.fsm(game.id)
@@ -131,7 +131,7 @@ defmodule Codebattle.CodeCheck.JS.IntegrationTest do
     Phoenix.ChannelTest.push(socket1, "editor:data", %{editor_text: "test"})
 
     Phoenix.ChannelTest.push(socket1, "check_result", %{
-      editor_text: "const solution = (a, b) => { return a + b; }; module.exports = solution;\n",
+      editor_text: "const solution = (arr) => { return arr.reduce((acc, [a, b], i) => ({...acc, [i + 1]: a + b}), {}); }; module.exports = solution;\n",
       lang: "js"
     })
 
