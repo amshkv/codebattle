@@ -28,14 +28,17 @@ defmodule CodebattleWeb.Factory do
   def task_factory do
     %Task{
       name: Base.encode16(:crypto.strong_rand_bytes(2)),
-      description: "test sum",
+      description: "test sums",
       level: "easy",
-      asserts: "{\"arguments\":[1,1],\"expected\":2}\n{\"arguments\":[2,2],\"expected\":4}\n{\"arguments\":[1,3],\"expected\":4}\n",
+      asserts: "{\"arguments\":[[[1,1]]],\"expected\":{\"1\": 2}}\n{\"arguments\":[[[2,2], [3, 1]]],\"expected\":{\"1\": 4, \"2\": 4}}\n{\"arguments\":[[[1,3]]],\"expected\":{\"1\": 4}}\n",
       input_signature: [
-        %{"argument-name" => "a", "type" => %{"name" => "integer"}},
-        %{"argument-name" => "b", "type" => %{"name" => "integer"}}
+        %{"argument-name" => "arr", "type" =>
+          %{"name" => "array", "nested" =>
+            %{"name" => "array", "nested" => %{"name" => "integer"}}
+          }
+        },
       ],
-      output_signature: %{"type" => %{"name" => "integer"}}
+      output_signature: %{"type" => %{"name" => "hash", "nested" => %{"name" => "integer"}}}
     }
   end
 

@@ -30,13 +30,16 @@ levels = ["elementary", "easy", "medium", "hard"]
 
     task_data = %Codebattle.Task{
       name: task_name,
-      description: "test sum: for ruby `def solution(a,b); a+b;end;`",
-      asserts: "{\"arguments\":[1,1],\"expected\":2}\n{\"arguments\":[2,2],\"expected\":4}\n",
+      description: "test sums: for ruby `def solution(arr); a+b;end;`",
+      asserts: "{\"arguments\":[[[1,1]]],\"expected\":{\"1\": 2}}\n{\"arguments\":[[[2,2], [1,1]]],\"expected\":{\"1\": 4, \"2\": 2}}\n",
       input_signature: [
-        %{"argument-name" => "a", "type" => %{"name" => "integer"}},
-        %{"argument-name" => "b", "type" => %{"name" => "integer"}}
+        %{
+          "argument-name" => "arr", "type" => %{"name" => "array", "nested" =>
+            %{"name" => "array", "nested" => %{"name" => "integer"}}
+          }
+        },
       ],
-      output_signature: %{"type" => %{"name" => "integer"}}
+      output_signature: %{"type" => %{"name" => "hash", "nested" => %{"name" => "integer"}}}
     }
 
     task = Codebattle.Task.changeset(Map.merge(task_data, %{level: level})) |> Repo.insert!()
